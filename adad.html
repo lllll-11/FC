@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campo de Fútbol - FC Barcelona</title>
+    <style>
+        :root {
+            --primary: #004D98;
+            --secondary: #A50044;
+            --background: #f8f9fa;
+            --text: #333333;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .buttons {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .button {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        .button:hover::before {
+            transform: translateX(0);
+        }
+
+        .music-library {
+            background: linear-gradient(45deg, #004D98, #A50044);
+        }
+        
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .button:active {
+            transform: translateY(-1px);
+        }
+
+        .icon {
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem;
+            }
+
+            .buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .section h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .field-container {
+            background: #2E7D32;
+            border-radius: 1rem;
+            aspect-ratio: 4/3;
+            position: relative;
+            overflow: hidden;
+            margin: 2rem auto;
+            max-width: 800px;
+        }
+
+        .field-lines {
+            position: absolute;
+            inset: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            border-radius: 0.5rem;
+        }
+
+        .center-circle {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+        }
+
+        .penalty-area {
+            position: absolute;
+            width: 30%;
+            height: 40%;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .penalty-area.left {
+            left: 0;
+            top: 30%;
+        }
+
+        .penalty-area.right {
+            right: 0;
+            top: 30%;
+        }
+
+        .player-dot {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border: 2px solid white;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 2;
+        }
+
+        .player-dot:hover {
+            transform: scale(1.2);
+        }
+
+        .player-info-card {
+            position: absolute;
+            background: rgb(0, 0, 0);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow);
+            width: 200px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 3;
+            color: white;
+        }
+
+        .player-dot:hover .player-info-card {
+            opacity: 1;
+        }
+
+        .player-info-card h3 {
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .player-info-card p {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .player-dot {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+
+            .player-info-card {
+                width: 150px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="section">
+            <h2>Campo de Fútbol</h2>
+            <div class="field-container">
+                <div class="field-lines"></div>
+                <div class="center-circle"></div>
+                <div class="penalty-area left"></div>
+                <div class="penalty-area right"></div>
+                
+                <div class="player-dot" style="top: 50%; left: 5%;">
+                    <div class="player-info-card">
+                        <h3>Marc-André ter Stegen</h3>
+                        <p>Posición: Portero</p>
+                    </div>
+                    1
+                </div>
+                
+                <div class="player-dot" style="top: 20%; left: 25%;">
+                    <div class="player-info-card">
+                        <h3>Alejandro Balde</h3>
+                        <p>Posición: Defensor</p>
+                    </div>
+                    2
+                </div>
+                <div class="player-dot" style="top: 40%; left: 25%;">
+                    <div class="player-info-card">
+                        <h3>Andreas Christensen</h3>
+                        <p>Posición: Defensor</p>
+                    </div>
+                    3
+                </div>
+                <div class="player-dot" style="top: 60%; left: 25%;">
+                    <div class="player-info-card">
+                        <h3>Ronald Araújo</h3>
+                        <p>Posición: Defensor</p>
+                    </div>
+                    4
+                </div>
+                <div class="player-dot" style="top: 80%; left: 25%;">
+                    <div class="player-info-card">
+                        <h3>Jules Koundé</h3>
+                        <p>Posición: Defensor</p>
+                    </div>
+                    5
+                </div>
+                
+                <div class="player-dot" style="top: 30%; left: 50%;">
+                    <div class="player-info-card">
+                        <h3>Pedri</h3>
+                        <p>Posición: Mediocampista</p>
+                    </div>
+                    6
+                </div>
+                <div class="player-dot" style="top: 50%; left: 50%;">
+                    <div class="player-info-card">
+                        <h3>Frenkie de Jong</h3>
+                        <p>Posición: Mediocampista</p>
+                    </div>
+                    7
+                </div>
+                <div class="player-dot" style="top: 70%; left: 50%;">
+                    <div class="player-info-card">
+                        <h3>Gavi</h3>
+                        <p>Posición: Mediocampista</p>
+                    </div>
+                    8
+                </div>
+
+                <div class="player-dot" style="top: 30%; left: 75%;">
+                    <div class="player-info-card">
+                        <h3>Lamine Yamal</h3>
+                        <p>Posición: Delantero</p>
+                    </div>
+                    9
+                </div>
+                <div class="player-dot" style="top: 50%; left: 75%;">
+                    <div class="player-info-card">
+                        <h3>Robert Lewandowski</h3>
+                        <p>Posición: Delantero</p>
+                    </div>
+                    10
+                </div>
+                <div class="player-dot" style="top: 70%; left: 75%;">
+                    <div class="player-info-card">
+                        <h3>Ferran Torres</h3>
+                        <p>Posición: Delantero</p>
+                    </div>
+                    11
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="buttons">
+        <a href="hhh.html" class="button music-library">
+            <span class="icon">🚄</span>
+            Regresar
+        </a>
+        </div>
+</body>
+</html>
